@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ChgManagementSystem.Models.Branch>
+
+@{
+    ViewData["Title"] = "Branches";
+}
+
+<div class="branches-page">
+
+    <div class="dark-overlay">
+
+        <div class="container py-5">
+
+            <h2 class="mb-4 text-white fw-bold">
+                Church Branches
+            </h2>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <p>
+                    <a asp-action="Create"
+                       class="btn btn-primary btn-lg">
+
+                        Add Branch
+
+                    </a>
+                </p>
+            }
+
+            <div class="row">
+
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-4 mb-4">
+
+                        <div class="branch-image-card">
+
+                            <div class="branch-overlay">
+
+                                <div class="branch-content">
+
+                                    <h3 class="text-white fw-bold">
+                                        @item.Name
+                                    </h3>
+
+                                    <p class="text-white">
+                                        @item.Location
+                                    </p>
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-light">
+
+                                        Open Branch
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,133 @@
+﻿@model IEnumerable<ChgManagementSystem.Models.TitheRecord>
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Tithe Records";
+}
+
+<div class="container mt-4">
+
+    <div class="table-container">
+
+        <h1 class="mb-4">
+            Tithe Records
+        </h1>
+
+        <!-- MONTH FILTER -->
+
+        <form method="get" class="mb-4">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <select name="month"
+                            class="form-select"
+                            onchange="this.form.submit()">
+
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            if (ViewBag.SelectedMonth == i)
+                            {
+                                <option value="@i" selected>
+                                    @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@i">
+                                    @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)
+                                </option>
+                            }
+                        }
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <!-- BUTTONS -->
+
+        <p>
+
+            <a asp-action="Create"
+               class="btn btn-primary">
+
+                Add Payment
+
+            </a>
+
+        </p>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="ExportTithesToExcel"
+               class="btn btn-success mb-3">
+
+                Export Excel
+
+            </a>
+        }
+
+        <!-- TABLE -->
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Member</th>
+
+                    <th>Month</th>
+
+                    <th>Year</th>
+
+                    <th>Promised</th>
+
+                    <th>Paid</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+                            @item.Member.FirstName
+                            @item.Member.LastName
+                        </td>
+
+                        <td>
+                            @DateTimeFormatInfo.CurrentInfo.GetMonthName(item.Month)
+                        </td>
+
+                        <td>
+                            @item.Year
+                        </td>
+
+                        <td>
+                            R @item.PromisedAmount
+                        </td>
+
+                        <td>
+                            R @item.PaidAmount
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

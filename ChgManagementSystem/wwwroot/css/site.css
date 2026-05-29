@@ -1,0 +1,155 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    padding-top: 56px;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+    background: url('/img/DarkHom.jpeg') no-repeat center center fixed;
+    background-size: cover;
+}
+/* MAIN */
+
+main {
+    padding-bottom: 120px;
+}
+/* DASHBOARD */
+
+.dashboard-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: #1e3a8a;
+}
+
+.dashboard-subtitle {
+    font-size: 18px;
+    color: #555;
+}
+/* BRANCH CARDS */
+
+.branch-card {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+    .branch-card:hover {
+        transform: translateY(-5px);
+    }
+
+.branch-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0f172a;
+}
+
+.branch-location {
+    color: #666;
+}
+/* STATS */
+
+.stats-card {
+    background: #1e3a8a;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+/* TABLE */
+
+.table-container { /* background: rgba(255,255,255,0.95); padding: 20px; border-radius: 10px; */
+    background: rgba(255,255,255,0.97);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+/* HERO SECTION (HOME PAGE ONLY) */
+
+.hero-section {
+    background: url('/img/Hom.jpeg') no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    position: relative;
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    min-height: 100vh;
+    width: 100%;
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+/* BRANCH IMAGE CARD */
+
+.branch-image-card {
+    height: 300px;
+    background-image: url('/img/Temp.jpeg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+    .branch-image-card:hover {
+        transform: scale(1.03);
+    }
+
+.branch-overlay {
+    background: rgba(0,0,0,0.5);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.branch-content {
+    z-index: 2;
+}
+/* BUTTONS */
+
+.btn {
+    border-radius: 30px;
+    padding: 10px 25px;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+/* FOOTER */
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    text-align: center;
+    font-size: 14px;
+    padding: 6px 0;
+}
+/* CONTAINERS */
+
+.container {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}

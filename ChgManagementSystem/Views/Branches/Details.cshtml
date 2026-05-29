@@ -1,0 +1,150 @@
+﻿@model ChgManagementSystem.Models.Branch
+
+@{
+    ViewData["Title"] = "Branch Details";
+}
+
+<div class="container mt-5">
+
+    <div class="table-container">
+
+        <h1 class="mb-4 text-center">
+            Branch Details
+        </h1>
+
+        <hr />
+
+        <dl class="row">
+
+            <dt class="col-sm-3 fw-bold">
+                Branch Name
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.Name
+            </dd>
+
+            <dt class="col-sm-3 fw-bold">
+                Location
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.Location
+            </dd>
+
+            <dt class="col-sm-3 fw-bold">
+                Circuit
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.Circuit?.Name
+            </dd>
+
+        </dl>
+
+        <!-- TOGGLE BUTTON -->
+
+        <button class="btn btn-primary mt-3"
+                type="button"
+                onclick="toggleMembers()">
+
+            Show / Hide Members
+
+        </button>
+
+        <!-- MEMBERS TABLE -->
+
+        <div id="membersSection"
+             style="display:none;"
+             class="mt-4">
+
+            <h3 class="mb-3">
+                Branch Members
+            </h3>
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Surname</th>
+
+                        <th>Tittle</th>
+
+                        <th>Name</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var member in Model.Members)
+                    {
+                        <tr>
+
+                            <td>
+                                @member.LastName
+                            </td>
+
+                            <td>
+                                @member.Gender
+                            </td>
+
+                            <td>
+                                @member.FirstName
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="mt-4">
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Edit"
+                   asp-route-id="@Model?.Id"
+                   class="btn btn-warning">
+
+                    Edit
+
+                </a>
+            }
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+
+                Back to List
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function toggleMembers() {
+
+        var section = document.getElementById("membersSection");
+
+        if (section.style.display === "none") {
+
+            section.style.display = "block";
+        }
+        else {
+
+            section.style.display = "none";
+        }
+    }
+
+</script>
