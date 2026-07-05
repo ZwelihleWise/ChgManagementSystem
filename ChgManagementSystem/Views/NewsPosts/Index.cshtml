@@ -1,0 +1,130 @@
+﻿@model IEnumerable<ChgManagementSystem.Models.NewsPost>
+
+@{
+    ViewData["Title"] = "Church News & Events";
+}
+
+<div class="container mt-5">
+
+    <div class="text-center mb-5">
+
+        <h1 class="fw-bold">
+            Church News & Events
+        </h1>
+
+        <p class="lead text-muted">
+            Stay updated with announcements, conferences,
+            services, youth meetings and special events.
+        </p>
+
+        @if (User.IsInRole("Admin") || User.IsInRole("Deacon"))
+        {
+            <a asp-action="Create"
+               class="btn btn-success btn-lg mt-3">
+
+                ➕ Create New Announcement
+
+            </a>
+        }
+
+    </div>
+
+    <div class="row">
+
+        @foreach (var item in Model.OrderByDescending(x => x.DatePosted))
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <div class="card border-0 shadow h-100">
+
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                        <img src="@item.ImagePath"
+                             class="card-img-top"
+                             style="height:250px;object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <img src="/images/church-default.jpg"
+                             class="card-img-top"
+                             style="height:250px;object-fit:cover;" />
+                    }
+
+                    <div class="card-body">
+
+                        <span class="badge bg-primary mb-2">
+                            @item.Category
+                        </span>
+
+                        <h4 class="fw-bold">
+                            @item.Title
+                        </h4>
+
+                        <p class="text-muted">
+                            Posted:
+                            @item.DatePosted.ToString("dd MMM yyyy")
+                        </p>
+
+                        @if (item.EventDate != null)
+                        {
+                            <div class="alert alert-warning py-2">
+
+                                📅 Event:
+                                @item.EventDate?.ToString("dd MMM yyyy")
+
+                            </div>
+                        }
+
+                        <p>
+
+                            @(item.Content.Length > 150
+                                ? item.Content.Substring(0, 150) + "..."
+                                : item.Content)
+
+                        </p>
+
+                    </div>
+
+                    <div class="card-footer bg-white border-0">
+
+                        <a asp-action="Details"
+                           asp-route-id="@item.Id"
+                           class="btn btn-primary w-100">
+
+                            Read Full Announcement
+
+                        </a>
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("Deacon"))
+                        {
+                            <div class="mt-2 d-flex gap-2">
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-warning flex-fill">
+
+                                    Edit
+
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-danger flex-fill">
+
+                                    Delete
+
+                                </a>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

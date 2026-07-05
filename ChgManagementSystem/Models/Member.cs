@@ -22,14 +22,12 @@ namespace ChgManagementSystem.Models
         public DateTime DateJoined { get; set; } = DateTime.Now;
 
         public bool IsActive { get; set; } = true;
-
-        // Foreign Key
+        public bool HasSystemAccess { get; set; } = false;
         public int BranchId { get; set; }
 
         [ForeignKey("BranchId")]
         public Branch? Branch { get; set; }
-
-        // Navigation Property
         public ICollection<TitheRecord>? TitheRecords { get; set; }
+        public ICollection<MonthlyOffering>? MonthlyOfferings { get; set; }
     }
 }

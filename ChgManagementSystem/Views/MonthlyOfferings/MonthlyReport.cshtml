@@ -1,0 +1,161 @@
+﻿@model IEnumerable<ChgManagementSystem.Models.MonthlyOffering>
+
+@{
+    ViewData["Title"] = "Monthly Offering Register";
+
+    var branch = ViewBag.Branch as ChgManagementSystem.Models.Branch;
+
+    int month = ViewBag.Month;
+    int year = ViewBag.Year;
+
+    var offeringTypes = Model
+        .Select(x => x.OfferingType)
+        .Distinct()
+        .OrderBy(x => x.Name)
+        .ToList();
+
+    var members = Model
+        .Select(x => x.Member)
+        .Distinct()
+        .OrderBy(x => x.LastName)
+        .ToList();
+}
+
+<div class="container table-container mt-4">
+
+    <h2 class="mb-4">
+
+        @branch.Name
+
+        <br />
+
+        <small>
+            Monthly Offering Register
+        </small>
+
+    </h2>
+
+    <p>
+
+        <strong>Month :</strong>
+
+        @System.Globalization.CultureInfo.CurrentCulture
+        .DateTimeFormat
+        .GetMonthName(month)
+
+        @year
+
+    </p>
+    <div class="mb-3">
+
+        <a asp-action="ExportExcel"
+           asp-route-branchId="@ViewBag.Branch.Id"
+           asp-route-month="@ViewBag.Month"
+           asp-route-year="@ViewBag.Year"
+           class="btn btn-success">
+
+            Export Excel
+
+        </a>
+
+        <a asp-action="ExportPdf"
+           asp-route-branchId="@ViewBag.Branch.Id"
+           asp-route-month="@ViewBag.Month"
+           asp-route-year="@ViewBag.Year"
+           class="btn btn-danger">
+
+            Export PDF
+
+        </a>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Member</th>
+
+                @foreach (var type in offeringTypes)
+                {
+                    <th>@type.Name</th>
+                }
+
+                <th>Total</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var member in members)
+            {
+                decimal rowTotal = 0;
+
+                <tr>
+
+                    <td>
+
+                        @member.FirstName @member.LastName
+
+                    </td>
+
+                    @foreach (var type in offeringTypes)
+                    {
+                        var payment = Model.FirstOrDefault(x =>
+                        x.MemberId == member.Id &&
+                        x.OfferingTypeId == type.Id);
+
+                        decimal amount = payment?.Amount ?? 0;
+
+                        rowTotal += amount;
+
+                        <td>@amount.ToString("C")</td>
+                    }
+
+                    <td>
+
+                        <strong>
+
+                            @rowTotal.ToString("C")
+
+                        </strong>
+
+                    </td>
+
+                </tr>
+            }
+        <tfoot class="table-dark">
+
+            <tr>
+
+                <td colspan="3">
+                    Grand Total
+                </td>
+
+                <td class="fw-bold">
+
+                        @Model.Sum(x => x.Amount).ToString("N2")
+
+                </td>
+
+            </tr>
+
+        </tfoot>
+
+        </tbody>
+
+    </table>
+    <a asp-controller="Branches"
+       asp-action="Details"
+       asp-route-id="@ViewBag.Branch.Id"
+       class="btn btn-secondary">
+
+        Back to Branch
+
+    </a>
+
+</div>

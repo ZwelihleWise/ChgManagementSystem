@@ -12,13 +12,25 @@ namespace ChgManagementSystem.Models
 
         public string? Location { get; set; }
 
-        // Foreign Key
+        public string? BranchImage { get; set; }
+
+        public string? BranchNewsletter { get; set; }
+
+        public string? DeaconInformation { get; set; }
+
+        
         public int CircuitId { get; set; }
 
         [ForeignKey("CircuitId")]
         public Circuit? Circuit { get; set; }
 
-        // Navigation Property
+        
         public ICollection<Member>? Members { get; set; }
+
+        
+        public string? ImagePath { get; set; }
+
+       
+        public ICollection<BranchLeader>? BranchLeaders { get; set; }
     }
 }

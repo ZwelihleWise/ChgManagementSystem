@@ -1,0 +1,185 @@
+﻿@model ChgManagementSystem.Models.NewsPost
+
+@{
+    ViewData["Title"] = "Create Announcement";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg border-0">
+
+        <div class="card-header bg-primary text-white">
+
+            <h2 class="mb-0">
+                Create Church Announcement
+            </h2>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="alert alert-info">
+
+                <h5>📢 How to Create a Good Announcement</h5>
+
+                <p class="mb-2">
+                    Use the Content section to provide complete event details.
+                </p>
+
+                <strong>Example Format:</strong>
+
+                <hr />
+
+                <p class="mb-0">
+
+                    Venue: Durban Central Branch<br />
+                    Time: 10:00 AM<br />
+                    Guest Speaker: Overseer John Smith<br />
+                    Dress Code: Church Uniform<br /><br />
+
+                    All members are encouraged to attend this special revival service.
+
+                </p>
+
+            </div>
+
+            <form asp-action="Create"
+                  enctype="multipart/form-data">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger">
+                </div>
+
+                <div class="form-group mb-3">
+
+                    <label asp-for="Title"
+                           class="fw-bold">
+                    </label>
+
+                    <input asp-for="Title"
+                           class="form-control form-control-lg"
+                           placeholder="Youth Revival Service 2026" />
+
+                    <span asp-validation-for="Title"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="form-group mb-3">
+
+                    <label class="fw-bold">
+                        Category
+                    </label>
+
+                    <select asp-for="Category"
+                            class="form-select">
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        <option value="News">
+                            📰 News
+                        </option>
+
+                        <option value="Event">
+                            📅 Event
+                        </option>
+
+                        <option value="Newsletter">
+                            📖 Newsletter
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group mb-3">
+
+                    <label class="fw-bold">
+                        Event Date
+                    </label>
+
+                    <input asp-for="EventDate"
+                           type="date"
+                           class="form-control" />
+
+                </div>
+
+                <div class="form-group mb-3">
+
+                    <label class="fw-bold">
+                        Announcement Image
+                    </label>
+
+                    <input type="file"
+                           name="Image"
+                           class="form-control" />
+
+                    <small class="text-muted">
+                        Upload a poster, event flyer, church photo, or newsletter image.
+                    </small>
+
+                </div>
+
+                <div class="form-group mb-3">
+
+                    <label asp-for="Content"
+                           class="fw-bold">
+                    </label>
+
+                    <textarea asp-for="Content"
+                              rows="12"
+                              class="form-control"
+                              placeholder="Venue:&#10;Time:&#10;Speaker:&#10;Additional Information:">
+                    </textarea>
+
+                    <span asp-validation-for="Content"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="form-check mb-4">
+
+                    <input asp-for="IsPublished"
+                           class="form-check-input" />
+
+                    <label asp-for="IsPublished"
+                           class="form-check-label">
+
+                        Publish immediately for members and visitors
+
+                    </label>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success btn-lg">
+
+                    📢 Publish Announcement
+
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary btn-lg">
+
+                    Back
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,44 +1,338 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@model IEnumerable<ChgManagementSystem.Models.NewsPost>
+@using ChgManagementSystem.Models
+
+@{
+    ViewData["Title"] = "Home";
+
+    var settings = ViewBag.Settings as WebsiteSettings;
+    var albums = ViewBag.GalleryAlbums as List<GalleryAlbum>;
 }
 
-<div class="hero-section">
+<section class="hero-section">
 
-    <div class="overlay">
+    <br />
+    <div class="container">
 
-        <div class="hero-content text-center">
+        <div class="row align-items-center">
+            <br />
+            <br />
+            <div class="col-lg-6">
 
-            <h1 class="display-3 fw-bold text-white">
-               The Church Of The Holy Ghost
-            </h1>
+                <h1>
 
-            <p class="lead text-white mt-3">
-                Circuit and Branch Management Portal
-            </p>
+                    @(settings?.ChurchName)
 
-            <div class="mt-4">
+                </h1>
 
-                <a asp-controller="Branches"
+                <h3>
+
+                    @(settings?.Motto)
+
+                </h3>
+
+                <p class="hero-text">
+
+                    @(settings?.WelcomeMessage)
+
+                </p>
+
+                <div class="mt-4">
+
+                    <a asp-controller="Branches"
+                       asp-action="Index"
+                       class="btn btn-warning btn-lg">
+
+                        Find nearest Branch
+
+                    </a>
+
+                    <a asp-controller="NewsPosts"
+                       asp-action="Index"
+                       class="btn btn-light btn-lg ms-2">
+
+                        Upcoming Events
+
+                    </a>
+
+                    <br />
+                    @if (!string.IsNullOrEmpty(settings?.LiveYoutubeUrl))
+                    {
+
+                        <a href="@settings.LiveYoutubeUrl"
+                           target="_blank"
+                           class="btn btn-danger btn-lg ms-2">
+
+                            🔴 Watch Live
+
+                        </a>
+
+                    }
+
+                    <br />
+                </div>
+
+            </div>
+
+            <div class="col-lg-6 text-center">
+
+                @if (!string.IsNullOrEmpty(settings?.HeroImagePath))
+                {
+
+                    <img src="@settings.HeroImagePath"
+                         class="hero-image" />
+
+                }
+                <br />
+
+            </div>
+        </div>
+
+        
+
+    </div>
+    <br />
+</section>
+<div class="container mt-5">
+    <div class="row">
+
+    <div class="col-lg-6">
+
+        <div class="live-card">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h3 class="mb-0">
+
+                    📸 Church Gallery
+
+                </h3>
+
+                <a asp-controller="GalleryAlbums"
                    asp-action="Index"
-                   class="btn btn-primary btn-lg me-3">
-                    View Branches
-                </a>
+                   class="btn btn-sm btn-primary">
 
-                <a asp-controller="Members"
-                   asp-action="Index"
-                   class="btn btn-success btn-lg">
-                    View Members
+                    View All
+
                 </a>
 
             </div>
-            <br />
-            <p class="text-white">
-                Luke 24 verse 36 : “While they were still talking about this,
-                Jesus himself stood among them and said to them, ‘Peace be with you.’” greetings
-            </p>
+
+            <div class="row">
+
+                @if (albums != null && albums.Any())
+                {
+                    foreach (var album in albums.Take(4))
+                    {
+                        <div class="col-6 mb-4">
+
+                            <a asp-controller="GalleryAlbums"
+                               asp-action="ViewAlbum"
+                               asp-route-id="@album.Id"
+                               class="text-decoration-none">
+
+                                <div class="gallery-home-card">
+
+                                    <img src="@album.CoverImagePath"
+                                         class="gallery-home-image" />
+
+                                    <div class="gallery-home-title">
+                                        @album.Name
+                                    </div>
+
+                                </div>
+
+                            </a>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+
+                        <div class="alert alert-info">
+                            No gallery albums available.
+                        </div>
+
+                    </div>
+                }
+
+            </div>
 
         </div>
+
+    </div>
+
+        <!-- RIGHT SIDE -->
+
+    <div class="col-lg-6">
+
+            @if (!string.IsNullOrEmpty(settings?.LiveYoutubeUrl))
+            {
+                
+                    var embedUrl = settings.LiveYoutubeUrl
+                        .Replace("watch?v=", "embed/")
+                        .Replace("youtu.be/", "youtube.com/embed/");
+                
+
+                <div class="live-card">
+
+                    <h3 class="text-center mb-3">
+
+                        🔴 Live Worship
+
+                    </h3>
+
+                    <div class="ratio ratio-16x9">
+
+                        <iframe src="@($"{embedUrl}?autoplay=1&mute=1")"
+                                allow="autoplay; encrypted-media"
+                                allowfullscreen>
+                        </iframe>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="container mt-5">
+
+    @if (Model.Any())
+    {
+        var featured = Model.OrderByDescending(x => x.DatePosted).First();
+
+        <div class="card border-0 shadow-lg mb-5 overflow-hidden">
+
+            @if (!string.IsNullOrEmpty(featured.ImagePath))
+            {
+                <img src="@featured.ImagePath"
+                     class="card-img-top"
+                     style="height:400px;object-fit:cover;" />
+            }
+
+            <div class="card-body p-4">
+
+                <span class="badge bg-danger mb-2">
+                    📢 Featured Announcement
+                </span>
+
+                <h2 class="fw-bold">
+                    @featured.Title
+                </h2>
+
+                <p class="text-muted">
+                    Posted on @featured.DatePosted.ToString("dd MMM yyyy")
+                </p>
+
+                @if (featured.EventDate != null)
+                {
+                    <div class="alert alert-warning">
+                        📅 Event Date:
+                        @featured.EventDate?.ToString("dd MMM yyyy")
+                    </div>
+                }
+
+                <p class="lead">
+                    @(featured.Content.Length > 250
+                        ? featured.Content.Substring(0, 250) + "..."
+                        : featured.Content)
+                </p>
+
+                <a asp-controller="NewsPosts"
+                   asp-action="Details"
+                   asp-route-id="@featured.Id"
+                   class="btn btn-dark btn-lg">
+
+                    Read Full Announcement
+
+                </a>
+
+            </div>
+
+        </div>
+    }
+
+    <div class="text-center mb-5">
+
+        <h2 class="fw-bold">
+            Church News & Upcoming Events
+        </h2>
+
+        <p class="text-muted">
+            Stay informed about services, revivals, conferences,
+            youth meetings and community updates.
+        </p>
+
+    </div>
+
+    <div class="row">
+
+        @foreach (var post in Model.OrderByDescending(x => x.DatePosted).Skip(1))
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    @if (!string.IsNullOrEmpty(post.ImagePath))
+                    {
+                        <img src="@post.ImagePath"
+                             class="card-img-top"
+                             style="height:250px;object-fit:cover;" />
+                    }
+
+                    <div class="card-body">
+
+                        <span class="badge bg-primary mb-2">
+                            @post.Category
+                        </span>
+
+                        <h5 class="fw-bold">
+                            @post.Title
+                        </h5>
+
+                        <p class="text-muted small">
+                            📅 @post.DatePosted.ToString("dd MMM yyyy")
+                        </p>
+
+                        @if (post.EventDate != null)
+                        {
+                            <p class="text-danger fw-bold">
+                                Event:
+                                @post.EventDate?.ToString("dd MMM yyyy")
+                            </p>
+                        }
+
+                        <p>
+                            @(post.Content.Length > 120
+                                ? post.Content.Substring(0, 120) + "..."
+                                : post.Content)
+                        </p>
+
+                    </div>
+
+                    <div class="card-footer bg-white border-0">
+
+                        <a asp-controller="NewsPosts"
+                           asp-action="Details"
+                           asp-route-id="@post.Id"
+                           class="btn btn-outline-primary w-100">
+
+                            Read More
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
 
     </div>
 

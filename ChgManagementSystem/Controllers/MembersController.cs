@@ -8,26 +8,37 @@ using Microsoft.EntityFrameworkCore;
 using ChgManagementSystem.Data;
 using ChgManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using ClosedXML.Excel;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using ChgManagementSystem.ViewModels;
+
 
 namespace ChgManagementSystem.Controllers
 {
     public class MembersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public MembersController(ApplicationDbContext context)
+        public MembersController(ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Members
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Members.Include(m => m.Branch).Include(m => m.TitheRecords);
+            var applicationDbContext = _context.Members
+                .Include(m => m.Branch)
+                .Include(m => m.TitheRecords)
+                .OrderBy(m => m.LastName)
+                .ThenBy(m => m.FirstName);
+
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -267,5 +278,72 @@ namespace ChgManagementSystem.Controllers
 
             return File(pdf, "application/pdf", "Members.pdf");
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult CreateLogin(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Invalid member id");
+
+            var member = _context.Members.FirstOrDefault(x => x.Id == id);
+
+            if (member == null)
+                return NotFound("Member not found");
+
+            var model = new CreateLoginViewModel
+            {
+                MemberId = id,
+                Roles = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "Admin", Text = "Admin" },
+            new SelectListItem { Value = "Deacon", Text = "Deacon" },
+            new SelectListItem { Value = "Overseer", Text = "Overseer" }
+        }
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateLogin(CreateLoginViewModel model)
+        {
+            var member = await _context.Members.FindAsync(model.MemberId);
+
+            if (member == null)
+                return NotFound();
+
+            if (member.HasSystemAccess)
+                return BadRequest("Member already has login.");
+
+            string email = $"{member.FirstName}.{member.LastName}{member.Id}@church.local"
+                .ToLower();
+
+            string tempPassword = "Temp@1234";
+
+            var user = new IdentityUser
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true
+            };
+
+            var result = await _userManager.CreateAsync(user, tempPassword);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, model.SelectedRole);
+
+                member.HasSystemAccess = true;
+                await _context.SaveChangesAsync();
+
+                TempData["Username"] = email;
+                TempData["Password"] = tempPassword;
+            }
+
+            return RedirectToAction(nameof(Details), new { id = member.Id });
+        }
+
     }
 }

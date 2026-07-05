@@ -1,0 +1,35 @@
+﻿@model ChgManagementSystem.ViewModels.CreateLoginViewModel
+
+@{
+    ViewData["Title"] = "Create Login";
+}
+
+<div class="container mt-4">
+
+    <div class="table-container">
+
+        <h2>Create Login Account</h2>
+
+        <hr />
+
+        <form asp-action="CreateLogin" method="post">
+
+            <input type="hidden" asp-for="MemberId" />
+
+            <div class="mb-3">
+                <label>Select Role</label>
+                <select asp-for="SelectedRole"
+                        asp-items="Model.Roles"
+                        class="form-control">
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Create Login
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

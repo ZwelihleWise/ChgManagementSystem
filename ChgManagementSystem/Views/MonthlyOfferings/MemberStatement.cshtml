@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ChgManagementSystem.Models.MonthlyOffering>
+
+<h2>@ViewBag.Member.FirstName @ViewBag.Member.LastName</h2>
+
+<h4>@ViewBag.Member.Branch.Name</h4>
+<table class="table table-bordered">
+
+	<thead>
+
+		<tr>
+
+			<th>Month</th>
+
+			<th>Offering</th>
+
+			<th>Amount</th>
+
+		</tr>
+
+	</thead>
+
+	<tbody>
+
+		@foreach (var item in Model)
+		{
+			<tr>
+
+				<td>
+
+					@item.Month/@item.Year
+
+				</td>
+
+				<td>
+
+					@item.OfferingType.Name
+
+				</td>
+
+				<td>
+
+					@item.Amount
+
+				</td>
+
+			</tr>
+		}
+
+	</tbody>
+
+</table>

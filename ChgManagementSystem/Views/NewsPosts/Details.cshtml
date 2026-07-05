@@ -1,0 +1,107 @@
+﻿@model ChgManagementSystem.Models.NewsPost
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-5">
+
+    <div class="card border-0 shadow-lg overflow-hidden">
+
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <img src="@Model.ImagePath"
+                 class="img-fluid w-100"
+                 style="max-height:500px;object-fit:cover;" />
+        }
+
+        <div class="card-body p-5">
+
+            <span class="badge bg-primary mb-3 fs-6">
+                @Model.Category
+            </span>
+
+            <h1 class="fw-bold mb-3">
+                @Model.Title
+            </h1>
+
+            <div class="row mb-4">
+
+                <div class="col-md-6">
+
+                    <div class="alert alert-light border">
+
+                        <strong>📅 Posted:</strong>
+                        @Model.DatePosted.ToString("dd MMMM yyyy")
+
+                    </div>
+
+                </div>
+
+                @if (Model.EventDate != null)
+                {
+                    <div class="col-md-6">
+
+                        <div class="alert alert-warning">
+
+                            <strong>⛪ Event Date:</strong>
+                            @Model.EventDate?.ToString("dd MMMM yyyy")
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+            <div class="card border-0 bg-light">
+
+                <div class="card-body p-4">
+
+                    <h4 class="mb-3">
+                        Announcement Details
+                    </h4>
+
+                    <p style="font-size:1.15rem; line-height:2;">
+                        @Model.Content
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+
+        @if (User.IsInRole("Admin") || User.IsInRole("Deacon"))
+        {
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-warning">
+
+                Edit Announcement
+
+            </a>
+        }
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+
+            Back to News
+
+        </a>
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn btn-primary">
+
+            Home
+
+        </a>
+
+    </div>
+
+</div>

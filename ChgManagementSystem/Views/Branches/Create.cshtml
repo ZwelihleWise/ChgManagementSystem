@@ -1,46 +1,88 @@
 ﻿@model ChgManagementSystem.Models.Branch
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Branch";
 }
 
-<h1>Create</h1>
+<div class="container mt-5">
 
-<h4>Branch</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
-                <input asp-for="Location" class="form-control" />
-                <span asp-validation-for="Location" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CircuitId" class="control-label"></label>
-                <select asp-for="CircuitId" class ="form-control" asp-items="ViewBag.CircuitId"></select>
-            </div>
-            <div class="form-group mt-3">
+    <div class="table-container">
 
-                <input type="submit"
-                       value="Add Branch"
-                       class="btn btn-primary" />
+        <h1 class="mb-4 text-dark fw-bold">
+            Create Branch
+        </h1>
+
+        <hr />
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <form asp-action="Create" enctype="multipart/form-data">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
+
+                    <div class="form-group mb-3">
+
+                        <label asp-for="Name" class="form-label fw-bold text-dark"></label>
+                        <input asp-for="Name" class="form-control form-control-lg" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="form-group mb-3">
+
+                        <label asp-for="Location" class="form-label fw-bold text-dark"></label>
+                        <input asp-for="Location" class="form-control form-control-lg" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="form-group mb-4">
+
+                        <label asp-for="CircuitId" class="form-label fw-bold text-dark"></label>
+                        <select asp-for="CircuitId"
+                                class="form-select form-select-lg"
+                                asp-items="ViewBag.CircuitId">
+                        </select>
+
+                    </div>
+
+                   
+                    <div class="form-group mb-3">
+                        <label class="fw-bold">Branch Picture</label>
+                        <input type="file"
+                               name="BranchImage"
+                               class="form-control" />
+                    </div>
+
+                    <div class="form-group mt-4">
+
+                        <input type="submit"
+                               value="Add Branch"
+                               class="btn btn-primary btn-lg" />
+
+                        <a asp-action="Index"
+                           class="btn btn-secondary btn-lg ms-2">
+                            Back
+                        </a>
+
+                    </div>
+
+                </form>
 
             </div>
-        </form>
+
+        </div>
+
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

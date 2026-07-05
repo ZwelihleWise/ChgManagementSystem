@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Tithe Records";
+
+    decimal totalPaid = Model.Sum(x => x.PaidAmount);
 }
 
 <div class="container mt-4">
@@ -10,7 +12,7 @@
     <div class="table-container">
 
         <h1 class="mb-4">
-            Tithe Records
+            Tongaat Temple Fund Records
         </h1>
 
         <!-- MONTH FILTER -->
@@ -30,13 +32,13 @@
                             if (ViewBag.SelectedMonth == i)
                             {
                                 <option value="@i" selected>
-                                    @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)
+                                    @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)
                                 </option>
                             }
                             else
                             {
                                 <option value="@i">
-                                    @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)
+                                    @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)
                                 </option>
                             }
                         }
@@ -48,6 +50,19 @@
             </div>
 
         </form>
+
+        <!-- MONTH TOTAL -->
+
+        <div class="alert alert-success mb-3">
+
+            <strong>
+                @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName((int)ViewBag.SelectedMonth)
+                Total:
+            </strong>
+
+            R @totalPaid.ToString("N2")
+
+        </div>
 
         <!-- BUTTONS -->
 
@@ -96,13 +111,12 @@
 
             <tbody>
 
-                @foreach (var item in Model)
+                @foreach (var item in Model.OrderByDescending(x => x.PromisedAmount))
                 {
                     <tr>
 
                         <td>
-                            @item.Member.FirstName
-                            @item.Member.LastName
+                            @item.Member.FirstName @item.Member.LastName
                         </td>
 
                         <td>
@@ -114,15 +128,31 @@
                         </td>
 
                         <td>
-                            R @item.PromisedAmount
+                            R @item.PromisedAmount.ToString("N2")
                         </td>
 
                         <td>
-                            R @item.PaidAmount
+                            R @item.PaidAmount.ToString("N2")
                         </td>
 
                     </tr>
                 }
+
+                <tr class="table-success fw-bold">
+
+                    <td colspan="4" class="text-end">
+
+                        TOTAL PAID
+
+                    </td>
+
+                    <td>
+
+                        R @totalPaid.ToString("N2")
+
+                    </td>
+
+                </tr>
 
             </tbody>
 

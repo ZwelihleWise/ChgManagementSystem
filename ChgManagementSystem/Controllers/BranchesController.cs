@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using ChgManagementSystem.Data;
 using ChgManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace ChgManagementSystem.Controllers
 {
+   
     public class BranchesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -38,6 +41,7 @@ namespace ChgManagementSystem.Controllers
             var branch = await _context.Branches
                 .Include(b => b.Circuit)
                 .Include(b => b.Members)
+                .Include(b=> b.BranchLeaders)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
             if (branch == null)
@@ -60,15 +64,51 @@ namespace ChgManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Location,CircuitId")] Branch branch)
+        [Authorize(Roles = "Admin,Deacon")]
+        public async Task<IActionResult> Create(
+      Branch branch,
+      IFormFile? BranchImage)
         {
             if (ModelState.IsValid)
             {
+                
+                if (BranchImage != null && BranchImage.Length > 0)
+                {
+                    string fileName = Guid.NewGuid() + Path.GetExtension(BranchImage.FileName);
+
+                    string uploadPath = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot/uploads/branches");
+
+                    if (!Directory.Exists(uploadPath))
+                    {
+                        Directory.CreateDirectory(uploadPath);
+                    }
+
+                    string filePath = Path.Combine(uploadPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await BranchImage.CopyToAsync(stream);
+                    }
+
+                    branch.ImagePath = "/uploads/branches/" + fileName;
+                }
+
+               
+
                 _context.Add(branch);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CircuitId"] = new SelectList(_context.Circuits, "Id", "Name", branch.CircuitId);
+
+            ViewData["CircuitId"] = new SelectList(
+                _context.Circuits,
+                "Id",
+                "Name",
+                branch.CircuitId);
+
             return View(branch);
         }
 
@@ -95,6 +135,7 @@ namespace ChgManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Deacon")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Location,CircuitId")] Branch branch)
         {
             if (id != branch.Id)

@@ -1,0 +1,216 @@
+﻿@model ChgManagementSystem.ViewModels.MonthlyOfferingEntryViewModel
+
+@{
+    ViewData["Title"] = "Monthly Offerings Grid";
+}
+
+<div class="container table-container mt-4">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+    <h2 class="mb-3">
+        Monthly Offering Entry - @Model.Month / @Model.Year
+    </h2>
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+
+            <input type="text"
+                   id="memberSearch"
+                   class="form-control"
+                   placeholder="🔍 Search member..." />
+
+        </div>
+
+    </div>
+
+    <form asp-action="Create" method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="BranchId" />
+        <input type="hidden" asp-for="Month" />
+        <input type="hidden" asp-for="Year" />
+
+        <table class="table table-bordered table-striped">
+
+            <thead class="table-dark">
+
+                <tr>
+                    <th>Member</th>
+
+                    @foreach (var type in Model.OfferingTypes)
+                    {
+                        <th>@type.Name</th>
+                    }
+
+                    <th>Total</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @for (int i = 0; i < Model.Members.Count; i++)
+                {
+                    <tr class="member-row">
+
+                        <td>
+
+                            <strong>
+                                @Model.Members[i].FirstName
+                                @Model.Members[i].LastName
+                            </strong>
+
+                            <br />
+
+                            <a asp-action="MemberStatement"
+                               asp-route-memberId="@Model.Members[i].Id"
+                               class="btn btn-sm btn-info mt-2">
+
+                                Statement
+
+                            </a>
+
+                        </td>
+
+                        @foreach (var type in Model.OfferingTypes)
+                        {
+                            <td>
+                                <input type="number"
+                                       name="amounts[@Model.Members[i].Id][@type.Id]"
+                                       class="form-control amount-input"
+                                       min="0"
+                                       step="0.01"
+                                       value="" />
+                            </td>
+                        }
+
+                        <td class="row-total fw-bold text-success">
+                            0.00
+                        </td>
+
+                    </tr>
+                }
+
+                <tr class="table-warning fw-bold">
+
+                    <td>Total</td>
+
+                    @for (int i = 0; i < Model.OfferingTypes.Count; i++)
+                    {
+                        <td class="column-total fw-bold">
+                            0.00
+                        </td>
+                    }
+
+                    <td id="grandTotal"
+                        class="fw-bold text-primary">
+
+                        0.00
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+        <button type="submit" class="btn btn-success">
+            Save Offerings
+        </button>
+        <br />
+        <a asp-controller ="Branch" asp-action="Details"
+           class="btn btn-secondary mt-2">
+            Back </a>
+
+    </form>
+    <script>
+
+        document.getElementById("memberSearch")
+        .addEventListener("keyup", function () {
+
+            var value = this.value.toLowerCase();
+
+            var rows = document.querySelectorAll(".member-row");
+
+            rows.forEach(function(row){
+
+                row.style.display =
+                    row.innerText.toLowerCase().includes(value)
+                    ? ""
+                    : "none";
+            });
+
+        });
+
+    </script>
+    <script>
+
+        function calculateTotals(){
+
+            let grandTotal=0;
+
+            let rows=document.querySelectorAll(".member-row");
+
+            rows.forEach(function(row){
+
+                let rowTotal=0;
+
+                let inputs=row.querySelectorAll(".amount-input");
+
+                inputs.forEach(function(input){
+
+                    rowTotal+=parseFloat(input.value)||0;
+
+                });
+
+                row.querySelector(".row-total").innerHTML=rowTotal.toFixed(2);
+
+                grandTotal+=rowTotal;
+
+            });
+
+            let cols=document.querySelectorAll(".column-total");
+
+            cols.forEach(function(col,index){
+
+                let total=0;
+
+                document.querySelectorAll(".member-row").forEach(function(row){
+
+                    let value=parseFloat(
+                        row.querySelectorAll(".amount-input")[index].value
+                    )||0;
+
+                    total+=value;
+
+                });
+
+                col.innerHTML=total.toFixed(2);
+
+            });
+
+            document.getElementById("grandTotal")
+                .innerHTML=grandTotal.toFixed(2);
+
+        }
+
+        document.querySelectorAll(".amount-input")
+        .forEach(function(box){
+
+            box.addEventListener("keyup",calculateTotals);
+
+            box.addEventListener("change",calculateTotals);
+
+        });
+
+        calculateTotals();
+
+    </script>
+</div>

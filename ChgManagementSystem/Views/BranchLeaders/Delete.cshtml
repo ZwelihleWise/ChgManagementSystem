@@ -1,0 +1,24 @@
+﻿@model ChgManagementSystem.Models.BranchLeader
+
+<h2>Delete Branch Leader</h2>
+
+<h4>Are you sure you want to delete this leader?</h4>
+
+<div>
+    <strong>@Model.FullName</strong> - @Model.Position
+</div>
+
+<form asp-action="DeleteConfirmed">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">
+        Delete
+    </button>
+
+    <a asp-controller="Branches"
+       asp-action="Details"
+       asp-route-id="@Model.BranchId"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+</form>

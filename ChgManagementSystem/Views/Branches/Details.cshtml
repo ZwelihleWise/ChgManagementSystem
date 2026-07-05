@@ -12,90 +12,146 @@
             Branch Details
         </h1>
 
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <div class="text-center mb-4">
+
+                <img src="@Model.ImagePath"
+                     class="img-fluid rounded shadow"
+                     style="max-height:300px;" />
+
+            </div>
+        }
+
         <hr />
 
         <dl class="row">
 
-            <dt class="col-sm-3 fw-bold">
-                Branch Name
-            </dt>
+            <dt class="col-sm-3 fw-bold">Branch Name</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
 
-            <dd class="col-sm-9">
-                @Model.Name
-            </dd>
+            <dt class="col-sm-3 fw-bold">Location</dt>
+            <dd class="col-sm-9">@Model.Location</dd>
 
-            <dt class="col-sm-3 fw-bold">
-                Location
-            </dt>
-
-            <dd class="col-sm-9">
-                @Model.Location
-            </dd>
-
-            <dt class="col-sm-3 fw-bold">
-                Circuit
-            </dt>
-
-            <dd class="col-sm-9">
-                @Model.Circuit?.Name
-            </dd>
+            <dt class="col-sm-3 fw-bold">Circuit</dt>
+            <dd class="col-sm-9">@Model.Circuit?.Name</dd>
 
         </dl>
 
-        <!-- TOGGLE BUTTON -->
+        <hr />
+
+        
+        <h3 class="mt-4">Branch Leaders</h3>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="BranchLeaders"
+               asp-action="Create"
+               asp-route-branchId="@Model.Id"
+               class="btn btn-primary mb-3">
+
+                Add Branch Leader
+
+            </a>
+        }
+
+        <div class="row">
+
+            @foreach (var leader in Model.BranchLeaders)
+            {
+                <div class="col-md-4 mb-4">
+
+                    <div class="card shadow-sm">
+
+                        @if (!string.IsNullOrEmpty(leader.PhotoPath))
+                        {
+                            <img src="@leader.PhotoPath"
+                                 class="card-img-top"
+                                 style="height:250px;object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <img src="/images/default-user.png"
+                                 class="card-img-top"
+                                 style="height:250px;object-fit:cover;" />
+                        }
+
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title">@leader.FullName</h5>
+
+                            <p class="text-muted mb-1">@leader.Position</p>
+
+                            <p class="mb-1">📞 @leader.PhoneNumber</p>
+
+                            <small>@leader.Description</small>
+
+                           
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="mt-3">
+
+                                    <a asp-controller="BranchLeaders"
+                                       asp-action="Edit"
+                                       asp-route-id="@leader.Id"
+                                       class="btn btn-sm btn-warning">
+                                        Edit
+                                    </a>
+
+                                    <a asp-controller="BranchLeaders"
+                                       asp-action="Delete"
+                                       asp-route-id="@leader.Id"
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Delete this leader?');">
+                                        Delete
+                                    </a>
+                                    
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+        <hr />
 
         <button class="btn btn-primary mt-3"
                 type="button"
                 onclick="toggleMembers()">
-
             Show / Hide Members
-
         </button>
-
-        <!-- MEMBERS TABLE -->
 
         <div id="membersSection"
              style="display:none;"
              class="mt-4">
 
-            <h3 class="mb-3">
-                Branch Members
-            </h3>
+            <h3 class="mb-3">Branch Members</h3>
 
             <table class="table table-bordered table-hover">
 
                 <thead class="table-dark">
-
                     <tr>
-
                         <th>Surname</th>
-
-                        <th>Tittle</th>
-
+                        <th>Title</th>
                         <th>Name</th>
-
                     </tr>
-
                 </thead>
 
                 <tbody>
 
-                    @foreach (var member in Model.Members)
+                    @foreach (var member in Model.Members
+                    .OrderBy(m => m.LastName)
+                    .ThenBy(m => m.FirstName))
                     {
                         <tr>
-
-                            <td>
-                                @member.LastName
-                            </td>
-
-                            <td>
-                                @member.Gender
-                            </td>
-
-                            <td>
-                                @member.FirstName
-                            </td>
-
+                            <td>@member.LastName</td>
+                            <td>@member.Gender</td>
+                            <td>@member.FirstName</td>
                         </tr>
                     }
 
@@ -107,25 +163,51 @@
 
         <div class="mt-4">
 
-            @if (User.IsInRole("Admin"))
+            @if (User.IsInRole("Admin") || User.IsInRole("Deacon"))
             {
-                <a asp-action="Edit"
-                   asp-route-id="@Model?.Id"
-                   class="btn btn-warning">
+                <a asp-controller="MonthlyOfferings"
+                   asp-action="SelectPeriod"
+                   asp-route-branchId="@Model.Id"
+                   class="btn btn-success">
+                    Monthly Offerings
+                </a>
+            }
+            @if (User.IsInRole("Admin") || User.IsInRole("Deacon"))
+            {
+                <a asp-controller="MonthlyOfferings"
+                   asp-action="SelectReportPeriod"
+                   asp-route-branchId="@Model.Id"
+                   class="btn btn-success">
 
-                    Edit
+                    View Monthly
 
                 </a>
             }
 
-            <a asp-action="Index"
-               class="btn btn-secondary">
-
-                Back to List
-
+            @if (User.IsInRole("Admin"))
+            {
+            <a asp-action="Edit"
+               asp-route-id="@Model?.Id"
+               class="btn btn-warning">
+                Edit
             </a>
+            }
+            @if (User.IsInRole("Admin") || User.IsInRole("Deacon"))
+            {
+                <a asp-controller="OfferingTypes"
+                   asp-action="Create"
+                   
+                   class="btn btn-success">
+                    Create Offerings
+                </a>
+            }
 
-        </div>
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Back to List
+    </a>
+
+</div>
 
     </div>
 
@@ -137,14 +219,8 @@
 
         var section = document.getElementById("membersSection");
 
-        if (section.style.display === "none") {
-
-            section.style.display = "block";
-        }
-        else {
-
-            section.style.display = "none";
-        }
+        section.style.display =
+            (section.style.display === "none") ? "block" : "none";
     }
 
 </script>

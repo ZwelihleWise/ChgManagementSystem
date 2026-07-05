@@ -1,0 +1,98 @@
+﻿@model ChgManagementSystem.Models.GalleryPhoto
+
+@{
+    ViewData["Title"] = "Upload Photo";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg border-0">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3 class="mb-0">
+                📷 Upload Photo
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Create"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <!-- Hidden Album ID -->
+                <input asp-for="GalleryAlbumId" type="hidden" />
+
+                <div class="mb-3">
+
+                    <label asp-for="Title" class="form-label"></label>
+
+                    <input asp-for="Title"
+                           class="form-control" />
+
+                    <span asp-validation-for="Title"
+                          class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Description"
+                           class="form-label"></label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="4"></textarea>
+
+                    <span asp-validation-for="Description"
+                          class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        Select Photo
+
+                    </label>
+
+                    <input type="file"
+                           name="PhotoImage"
+                           class="form-control"
+                           accept="image/*" />
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    Upload Photo
+
+                </button>
+
+                <a asp-controller="GalleryAlbums"
+                   asp-action="Index"
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

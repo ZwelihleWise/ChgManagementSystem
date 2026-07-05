@@ -1,0 +1,69 @@
+﻿@model ChgManagementSystem.Models.GalleryAlbum
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container mt-5">
+
+    <h1 class="fw-bold text-primary">
+
+        @Model.Name
+
+    </h1>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-controller="GalleryPhotoes"
+           asp-action="Create"
+           asp-route-albumId="@Model.Id"
+           class="btn btn-success mb-4">
+
+            + Upload Photos
+
+        </a>
+    }
+
+    <p class="text-muted">
+
+        @Model.Description
+
+    </p>
+
+    <hr />
+
+    <div class="row">
+
+        @foreach (var photo in Model.Photos)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <div class="card shadow-sm border-0">
+
+                    <img src="@photo.ImagePath"
+                         class="card-img-top"
+                         style="height:260px;object-fit:cover;" />
+
+                    <div class="card-body">
+
+                        <h5>
+
+                            @photo.Title
+
+                        </h5>
+
+                        <p>
+
+                            @photo.Description
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

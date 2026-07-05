@@ -1,0 +1,54 @@
+﻿@model ChgManagementSystem.Models.BranchLeader
+
+@{
+    ViewData["Title"] = "Add Branch Leader";
+}
+
+<div class="container mt-4">
+
+    <h2>Add Branch Leader</h2>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+        <input type="hidden" asp-for="BranchId" />
+
+        <div class="form-group mb-2">
+            <label>Full Name</label>
+            <input asp-for="FullName" class="form-control" />
+        </div>
+
+        <div class="form-group mb-2">
+            <label>Position</label>
+            <input asp-for="Position" class="form-control" />
+        </div>
+
+        <div class="form-group mb-2">
+            <label>Phone Number</label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+
+        <div class="form-group mb-2">
+            <label>Description</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Photo</label>
+            <input type="file" name="Photo" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Save Leader
+        </button>
+        <a asp-controller="Branches"
+           asp-action="Details"
+           asp-route-id="@Model.BranchId"
+           class="btn btn-secondary">
+
+            Cancel
+
+        </a>
+
+    </form>
+
+</div>

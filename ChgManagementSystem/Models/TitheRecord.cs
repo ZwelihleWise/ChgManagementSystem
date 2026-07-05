@@ -20,7 +20,7 @@ namespace ChgManagementSystem.Models
 
         public DateTime DatePaid { get; set; } = DateTime.Now;
 
-        // Foreign Key
+     
         public int MemberId { get; set; }
 
         [ForeignKey("MemberId")]

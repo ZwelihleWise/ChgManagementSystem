@@ -1,0 +1,121 @@
+﻿@model IEnumerable<ChgManagementSystem.Models.GalleryAlbum>
+
+@{
+    ViewData["Title"] = "Gallery Albums";
+}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h1 class="fw-bold text-primary">
+                Church Gallery
+            </h1>
+
+            <p class="text-muted">
+                Manage all church photo albums.
+            </p>
+
+        </div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create"
+               class="btn btn-success">
+
+                + New Album
+
+            </a>
+        }
+    </div>
+
+    <div class="row">
+
+        @foreach (var album in Model)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <div class="card h-100 shadow border-0">
+
+                    @if (!string.IsNullOrEmpty(album.CoverImagePath))
+                    {
+                        <img src="@album.CoverImagePath"
+                             class="card-img-top"
+                             style="height:250px;object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <img src="~/img/gallery-placeholder.jpg"
+                             class="card-img-top"
+                             style="height:250px;object-fit:cover;" />
+                    }
+
+                    <div class="card-body">
+
+                        <h4 class="fw-bold">
+
+                            @album.Name
+
+                        </h4>
+
+                        <p class="text-muted">
+
+                            @(string.IsNullOrEmpty(album.Description)
+                                ? "No description."
+                                : album.Description)
+
+                        </p>
+
+                        <span class="badge bg-primary">
+
+                            📷 @album.Photos.Count Photos
+
+                        </span>
+
+                    </div>
+
+                    <div class="card-footer bg-white">
+
+                        <div class="d-flex justify-content-between">
+
+                            <a asp-action="ViewAlbum"
+                               asp-route-id="@album.Id"
+                               class="btn btn-primary">
+
+                                Open Album
+
+                            </a>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit"
+                                   asp-route-id="@album.Id"
+                                   class="btn btn-warning">
+
+                                    Edit
+
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@album.Id"
+                                   class="btn btn-danger">
+
+                                    Delete
+
+                                </a>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

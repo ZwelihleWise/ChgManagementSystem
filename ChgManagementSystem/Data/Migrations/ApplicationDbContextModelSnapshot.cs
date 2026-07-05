@@ -17,7 +17,7 @@ namespace ChgManagementSystem.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.15")
+                .HasAnnotation("ProductVersion", "8.0.23")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -30,8 +30,20 @@ namespace ChgManagementSystem.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BranchImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchNewsletter")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("CircuitId")
                         .HasColumnType("int");
+
+                    b.Property<string>("DeaconInformation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
@@ -45,6 +57,41 @@ namespace ChgManagementSystem.Data.Migrations
                     b.HasIndex("CircuitId");
 
                     b.ToTable("Branches");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.BranchLeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.ToTable("BranchLeaders");
                 });
 
             modelBuilder.Entity("ChgManagementSystem.Models.Circuit", b =>
@@ -62,6 +109,63 @@ namespace ChgManagementSystem.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Circuits");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.GalleryAlbum", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CoverImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GalleryAlbums");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.GalleryPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateUploaded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GalleryAlbumId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GalleryAlbumId");
+
+                    b.ToTable("GalleryPhotos");
                 });
 
             modelBuilder.Entity("ChgManagementSystem.Models.Member", b =>
@@ -85,6 +189,9 @@ namespace ChgManagementSystem.Data.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("HasSystemAccess")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -100,6 +207,95 @@ namespace ChgManagementSystem.Data.Migrations
                     b.HasIndex("BranchId");
 
                     b.ToTable("Members");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.MonthlyOffering", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OfferingTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("OfferingTypeId");
+
+                    b.ToTable("MonthlyOfferings");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.NewsPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DatePosted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EventDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NewsPosts");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.OfferingType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OfferingTypes");
                 });
 
             modelBuilder.Entity("ChgManagementSystem.Models.TitheRecord", b =>
@@ -133,6 +329,62 @@ namespace ChgManagementSystem.Data.Migrations
                     b.HasIndex("MemberId");
 
                     b.ToTable("TitheRecords");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.WebsiteSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChurchName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FacebookUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeroImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InstagramUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LiveYoutubeUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Motto")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SaturdayService")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SundayService")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tuesday_Thursday_Service")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WelcomeMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WebsiteSettings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -348,6 +600,28 @@ namespace ChgManagementSystem.Data.Migrations
                     b.Navigation("Circuit");
                 });
 
+            modelBuilder.Entity("ChgManagementSystem.Models.BranchLeader", b =>
+                {
+                    b.HasOne("ChgManagementSystem.Models.Branch", "Branch")
+                        .WithMany("BranchLeaders")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.GalleryPhoto", b =>
+                {
+                    b.HasOne("ChgManagementSystem.Models.GalleryAlbum", "GalleryAlbum")
+                        .WithMany("Photos")
+                        .HasForeignKey("GalleryAlbumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GalleryAlbum");
+                });
+
             modelBuilder.Entity("ChgManagementSystem.Models.Member", b =>
                 {
                     b.HasOne("ChgManagementSystem.Models.Branch", "Branch")
@@ -357,6 +631,25 @@ namespace ChgManagementSystem.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Branch");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.MonthlyOffering", b =>
+                {
+                    b.HasOne("ChgManagementSystem.Models.Member", "Member")
+                        .WithMany("MonthlyOfferings")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChgManagementSystem.Models.OfferingType", "OfferingType")
+                        .WithMany("MonthlyOfferings")
+                        .HasForeignKey("OfferingTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+
+                    b.Navigation("OfferingType");
                 });
 
             modelBuilder.Entity("ChgManagementSystem.Models.TitheRecord", b =>
@@ -423,6 +716,8 @@ namespace ChgManagementSystem.Data.Migrations
 
             modelBuilder.Entity("ChgManagementSystem.Models.Branch", b =>
                 {
+                    b.Navigation("BranchLeaders");
+
                     b.Navigation("Members");
                 });
 
@@ -431,9 +726,21 @@ namespace ChgManagementSystem.Data.Migrations
                     b.Navigation("Branches");
                 });
 
+            modelBuilder.Entity("ChgManagementSystem.Models.GalleryAlbum", b =>
+                {
+                    b.Navigation("Photos");
+                });
+
             modelBuilder.Entity("ChgManagementSystem.Models.Member", b =>
                 {
+                    b.Navigation("MonthlyOfferings");
+
                     b.Navigation("TitheRecords");
+                });
+
+            modelBuilder.Entity("ChgManagementSystem.Models.OfferingType", b =>
+                {
+                    b.Navigation("MonthlyOfferings");
                 });
 #pragma warning restore 612, 618
         }

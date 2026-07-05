@@ -58,9 +58,19 @@ using (var scope = app.Services.CreateScope())
     }
 
     // Create Viewer Role
-    if (!await roleManager.RoleExistsAsync("Viewer"))
+    string[] roles =
+{
+    "Admin",
+    "Deacon",
+    "Overseer"
+};
+
+    foreach (var role in roles)
     {
-        await roleManager.CreateAsync(new IdentityRole("Viewer"));
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
     }
 
     // Create Default Admin User

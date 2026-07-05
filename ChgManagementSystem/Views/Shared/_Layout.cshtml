@@ -1,10 +1,12 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>@ViewData["Title"] - ChgManagementSystem</title>
+    <title>@ViewData["Title"] - CHG</title>
+    <link rel="icon" type="image/jpeg" href="~/img/icon.jpeg">
 
     <link rel="stylesheet"
           href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -25,12 +27,16 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 
             <div class="container-fluid">
-
-                <a class="navbar-brand fw-bold"
+                <a class="navbar-brand d-flex align-items-center"
                    asp-controller="Home"
                    asp-action="Index">
 
-                    Church CMS
+                    <img src="~/img/icon.jpeg"
+                         asp-append-version="true"
+                         alt="Church Logo"
+                         class="navbar-logo me-3" />
+
+                   
 
                 </a>
 
@@ -108,6 +114,47 @@
 
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link text-dark"
+                               asp-controller="NewsPosts"
+                               asp-action="Index">
+                                News & Events
+                            </a>
+                        </li>
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               asp-controller="GalleryAlbums"
+                               asp-action="Index">
+
+                                Gallery
+
+                            </a>
+
+                        </li>
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("Deacon"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                   asp-controller="NewsPosts"
+                                   asp-action="Create">
+                                    Create Post
+                                </a>
+                            </li>
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-controller="WebsiteSettings"
+                                   asp-action="Edit">
+
+                                    Website Settings
+
+                                </a>
+
+                            </li>
+                        }
+
                     </ul>
 
                     <!-- LOGIN / LOGOUT -->
@@ -131,7 +178,7 @@
     <footer class="footer text-white text-center py-2">
 
         <small>
-            &copy; 2026 - ChgManagementSystem
+            &copy; 2026 - The Church of The Holy Ghost. built by Wisecode IT Solutions PTY ltd.
         </small>
 
     </footer>

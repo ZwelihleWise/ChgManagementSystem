@@ -5,7 +5,28 @@
 }
 
 <h1>Details</h1>
+@if (TempData["Username"] != null)
+{
+    <div class="alert alert-success">
 
+        <h5>Login Account Created Successfully</h5>
+
+        <p>
+            <strong>Username:</strong>
+            @TempData["Username"]
+        </p>
+
+        <p>
+            <strong>Temporary Password:</strong>
+            @TempData["Password"]
+        </p>
+
+        <p class="mb-0 text-danger">
+            Please give these credentials to the member and advise them to change their password after logging in.
+        </p>
+
+    </div>
+}
 <div>
     <h4>Member</h4>
     <hr />
@@ -54,6 +75,21 @@
         </dd>
     </dl>
 </div>
+@if (!Model.HasSystemAccess)
+{
+    <a asp-action="CreateLogin"
+       asp-route-id="@Model.Id"
+       class="btn btn-success">
+        Create Login Account
+    </a>
+       
+}
+else
+{
+    <span class="text-success fw-bold">
+        System Access Created
+    </span>
+}
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
